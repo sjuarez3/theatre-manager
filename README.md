@@ -1,1 +1,1 @@
-# theatre-manager
+# Theatre Manager
