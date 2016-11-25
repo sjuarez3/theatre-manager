@@ -1,9 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>CS3319-Assignment3</title>
+<style>
+table {
+    border-collapse: collapse;
+}
 
-<div>
-{% for customer in customers %}
-    <span>{{ customer.0 }} {{ customer.1 }} {{ customer.2 }} {{ customer.3 }} {{ customer.4 }} </span><br />
-{% endfor %}
-</div>
-<div>
-    <a href="/entercustomer">ADD Customer</a><br />
-</div>
+td, th {
+    border: 1px solid black;
+    text-align: left;
+    padding: 6px;
+}
+</style>
+</head>
+<body>
+	<h1>Login</h1>
+	<div>
+	<table>
+		<tr>
+			<th>CustomerID</th>
+			<th>Name</th>
+			<th>Email</th>
+			<th>Sex</th>
+		</tr>
+		{% for customer in customers %}
+		<tr>
+			<th>{{ customer.0 }}</th>
+			<th><a href="/selectcustomer">{{ customer.1 }} {{ customer.2 }}</a></th> 
+			<th>{{ customer.3 }}</th>
+			<th>{{ customer.4 }}</th> 
+		{% endfor %}
+		</tr>
+	</table>
+	</div>
+	<div>
+		<a href="/entercustomer">New Customer? Sign in here</a><br />
+	</div>
+</body>
+</html>

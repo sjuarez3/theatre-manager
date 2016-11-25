@@ -16,6 +16,14 @@ def login():
 @app.route('/entercustomer')
 def addCustomer(name=None):
     return render_template('form6.html', name=name)
+	
+@app.route('/selectcustomer')
+def selectcustomer(name=None):
+    return render_template('form1.html', name=name)
+	
+@app.route('/ratemovie')
+def rateMovie(name=None):
+    return render_template('form4.html', name=name)
 
 @app.route('/submit', methods=["POST"])
 def submit():
@@ -23,7 +31,7 @@ def submit():
     cursor = cnx.cursor()
     insert_stmt = (
         "INSERT INTO Customer (FirstName, LastName, EmailAddress, Sex) "
-        "VALUES (%s, %s, %s, %s)"
+        "VALUES (%s, %s, %s, %c)"
     )
     data = (request.form['FirstName'], request.form['LastName'], request.form['EmailAddress'], request.form['Sex'])
     cursor.execute(insert_stmt, data)
