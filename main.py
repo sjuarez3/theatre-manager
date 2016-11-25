@@ -19,7 +19,7 @@ def addCustomer(name=None):
 
 @app.route('/submit', methods=["POST"])
 def submit():
-    cnx = mysql.connector.connect(user='root', database='mydb')
+    cnx = mysql.connector.connect(user='root', database='MovieTheatre')
     cursor = cnx.cursor()
     insert_stmt = (
         "INSERT INTO Customer (FirstName, LastName, EmailAddress, Sex) "
