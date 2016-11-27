@@ -61,6 +61,25 @@ def mainMenu():
     cnx.commit()
     cnx.close()
     return render_template('mainmenu.html', FirstName=request.form['FirstName'], LastName=request.form['LastName'], EmailAddress=request.form['EmailAddress'], Sex=Sex)
+
+@app.route("/moviesWatched")
+def movieSeen():
+	idCustomer = session.get('idCustomer', None)
+	cnx = mysql.connector.connect(user='root', database='MovieTheatre')
+	cursor = cnx.cursor()
+	
+	query = ("SELECT Movie.MovieName, DATE_FORMAT(Showing.ShowingDateTime, '%M-%d-%Y') AS ShowingDate, "
+	         "TIME_FORMAT(Showing.ShowingDateTime,'%r') AS ShowingTime, Attend.Rating "
+	         "FROM Attend, Customer, Movie, Showing " 
+			 "WHERE Customer.idCustomer = Attend.Customer_idCustomer "
+			 "AND Attend.Showing_idShowing = Showing.idShowing " 
+			 "AND Movie.idMovie = Showing.Movie_idMovie " 
+			 "AND Attend.Customer_idCustomer = " + str(idCustomer) +
+			 " ORDER BY Showing.ShowingDateTime DESC")
+	cursor.execute(query)
+	moviesWatched=cursor.fetchall()
+	cnx.close()
+	return render_template('movielistseen.html' ,moviesWatched=moviesWatched, FirstName=session.get('FirstName', None), LastName=session.get('LastName', None))
 	
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)

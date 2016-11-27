@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Theatre Manager</title>
+<style>
+table {
+    border-collapse: collapse;
+}
+
+td, th {
+    border: 1px solid black;
+    text-align: center;
+    padding: 6px;
+}
+</style>
+</head>
+<body>
+  <h1> {{ FirstName }} {{ LastName }}'s Movie History</h1>
+  <div>
+	<table>
+		<tr>
+		  <th>MovieTitle</th>
+		  <th>Date of Viewing</th>
+		  <th>Time of Viewing</th>
+		  <th>Rating</th>
+		</tr>
+		{% for movies in moviesWatched %}
+		<tr>
+			<th>{{ movies.0 }}</th>
+			<th>{{ movies.1 }}</th>
+			<th>{{ movies.2 }}</th> 
+			<th>{{ movies.3 }}</th>
+		{% endfor %}
+		</tr>
+	</table>
+  </div>
+</body>
+</html>
