@@ -79,7 +79,21 @@ def movieSeen():
 	cursor.execute(query)
 	moviesWatched=cursor.fetchall()
 	cnx.close()
-	return render_template('movielistseen.html' ,moviesWatched=moviesWatched, FirstName=session.get('FirstName', None), LastName=session.get('LastName', None))
-	
+	return render_template('movielistseen.html' , moviesWatched=moviesWatched, FirstName=session.get('FirstName', None), LastName=session.get('LastName', None))
+
+@app.route('/editProfile', methods=["POST"])
+def editProfile():
+    idCustomer = session.get('idCustomer', None)
+    cnx = mysql.connector.connect(user='root', database='MovieTheatre')
+    cursor = cnx.cursor()
+    update_stmt = (
+        "UPDATE Customer SET FirstName = %s, LastName = %s, EmailAddress = %s, Sex = %s WHERE idCustomer = " + str(idCustomer) + "")
+    data = (request.form['FirstName'], request.form['LastName'], request.form['EmailAddress'], request.form['Sex'])
+    cursor.execute(update_stmt, data)
+    print("Attempting: " + update_stmt)
+    cnx.commit()
+    cnx.close()
+    return render_template('customerprofile.html', FirstName=request.form['FirstName'], LastName=request.form['LastName'], EmailAddress=request.form['EmailAddress'], Sex=request.form['Sex'], idCustomer=idCustomer)
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
