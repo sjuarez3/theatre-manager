@@ -85,20 +85,6 @@ def movieSeen():
 	cnx.close()
 	return render_template('movielistseen.html' , moviesWatched=moviesWatched, FirstName=session.get('FirstName', None), LastName=session.get('LastName', None))
 
-@app.route('/editProfile', methods=["POST"])
-def editProfile():
-    idCustomer = session.get('idCustomer', None)
-    cnx = mysql.connector.connect(user='root', database='MovieTheatre')
-    cursor = cnx.cursor()
-    update_stmt = (
-        "UPDATE Customer SET FirstName = %s, LastName = %s, EmailAddress = %s, Sex = %s WHERE idCustomer = " + str(idCustomer) + "")
-    data = (request.form['FirstName'], request.form['LastName'], request.form['EmailAddress'], request.form['Sex'])
-    cursor.execute(update_stmt, data)
-    print("Attempting: " + update_stmt)
-    cnx.commit()
-    cnx.close()
-    return render_template('customerprofile.html', FirstName=request.form['FirstName'], LastName=request.form['LastName'], EmailAddress=request.form['EmailAddress'], Sex=request.form['Sex'], idCustomer=idCustomer)
-
 @app.route("/ratemovie")
 def rateMovie():
 	idCustomer = session.get('idCustomer', None)
@@ -142,6 +128,32 @@ def returnStartMenu():
 def signOut():
 	return render_template('login.html')
 
+@app.route('/searchshowtimes')
+def searchShowtimes(showings=None):
+    showings=showings
+    return render_template('searchshowtimes.html', showings=showings)
 	
+@app.route('/submitsearch', methods=["POST"])
+def submitSearch():
+
+    MovieName = request.form['MovieName']
+    startDate = request.form['startDate']
+    endDate = request.form['endDate']
+
+    cnx = mysql.connector.connect(user='root', database='MovieTheatre')
+    cursor = cnx.cursor()
+    query = (
+        "SELECT Showing.*, Genre.Genre, Movie.MovieName, TheatreRoom.RoomNumber FROM Showing JOIN Genre "
+		"ON Showing.Movie_idMovie = Genre.Movie_idMovie JOIN TheatreRoom ON Showing.TheatreRoom_RoomNumber "
+		"= TheatreRoom.RoomNumber JOIN Movie ON Showing.Movie_idMovie = Movie.idMovie WHERE "
+		"Movie.MovieName = '" + MovieName + "' AND Showing.ShowingDateTime > '" + startDate +"' "
+		"AND Showing.ShowingDateTime < '" + endDate +"'")
+		
+    print("Attempting " + query)
+    cursor.execute(query)
+    showings=cursor.fetchall()
+    cnx.close()
+    return searchShowtimes(showings)
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
