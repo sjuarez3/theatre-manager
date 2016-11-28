@@ -2,7 +2,9 @@ from flask import Flask, render_template, request, session
 import mysql.connector
 
 app = Flask(__name__)
-app.secret_key = "super secret key"
+app.secret_key = "key"
+
+import theatre_manager.staff
 
 @app.route("/")
 def login():
@@ -94,6 +96,6 @@ def editProfile():
     cnx.commit()
     cnx.close()
     return render_template('customerprofile.html', FirstName=request.form['FirstName'], LastName=request.form['LastName'], EmailAddress=request.form['EmailAddress'], Sex=request.form['Sex'], idCustomer=idCustomer)
-
+	
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
