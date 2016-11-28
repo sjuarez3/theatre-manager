@@ -2,14 +2,72 @@
 <html>
 <head>
 <title>Theatre Manager</title>
+<style>
+.tables {
+	float: left;
+	margin: 10px;
+}
+</style>
 </head>
 <body>
 		<h1>Staff Managment</h1>
-		<a href="/movies">Movie managment</a><br/>
-	    <a href="/genres">Genre managment</a><br/>
-		<a href="/rooms">Room managment</a><br/>
-		<a href="/showings">Showtime managment</a><br/>
-	    <a href="/customers">Customer managment</a><br/>
-		<a href="/attend">Attendance managment</a><br/>
+		
+		<div class="tables">
+			<h3>Movies</h3>
+			<ul>
+				<li><a href="/addmovie">Add Movie</a></li>
+				<li><a href="/deletemovie">Delete Movie</a></li>
+				<li><a href="/editmovie">Edit Movie</a></li>
+				<li><a href="/listmovies">List Movies</a></li>
+			</ul>
+		</div>
+		
+		<div class="tables">
+			<h3>Genres</h3>
+			<ul>
+				<li><a href="/addgenre">Add Genre</a></li>
+				<li><a href="/deletegenre">Delete Genre</a></li>
+				<li><a href="/listgenres">List Genres</a></li>
+			</ul>
+		</div>
+		
+		<div class="tables">
+			<h3>Rooms</h3>
+			<ul>
+				<li><a href="/addroom">Add Room</a></li>
+				<li><a href="/deleteroom">Delete Room</a></li>
+				<li><a href="/editroom">Edit Room</a></li>
+				<li><a href="/listroom">List Rooms</a></li>
+			</ul>
+		</div>
+		
+		<div class="tables">
+			<h3>Showings</h3>
+			<ul>
+				<li><a href="/addshowing">Add Showing</a></li>
+				<li><a href="/deleteshowing">Delete Showing</a></li>
+				<li><a href="/editshowing">Edit Showing</a></li>
+				<li><a href="/listshowings">List Showings</a></li>
+			</ul>
+		</div>
+		
+		<div class="tables">
+			<h3>Customers</h3>
+			<ul>
+				<li><a href="/addcustomer">Add Customer</a></li>
+				<li><a href="/deletecustomer">Delete Customer</a></li>
+				<li><a href="/editcustomer">Edit Customer</a></li>
+				<li><a href="/listcustomers">List Customer</a></li>
+			</ul>
+		</div>
+		
+		<div class="tables">
+			<h3>Attendance</h3>
+			<ul>
+				<li><a href="/attendance">List Attendance</a></li>
+			</ul>
+		</div>
+	
+		<a href="/">Click here to go back to the login screen</a>
  </body>
  </html>
