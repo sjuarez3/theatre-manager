@@ -15,21 +15,25 @@ td, th {
 </style>
 </head>
 <body>
-  <h1> {{ FirstName }} {{ LastName }}'s Movie History</h1>
+  <h1>Movie History</h1>
   <div>
 	<table>
 		<tr>
 		  <th>MovieTitle</th>
 		  <th>Date of Viewing</th>
 		  <th>Time of Viewing</th>
-		  <th>Rating</th>
+		  <th>Rating (1-5)</th>
 		</tr>
-		{% for movies in moviesWatched %}
+		{% for showingList in showings %}
 		<tr>
-			<th>{{ movies.0 }}</th>
-			<th>{{ movies.1 }}</th>
-			<th>{{ movies.2 }}</th> 
-			<th>{{ movies.3 }}</th>
+			<th>{{ showingList.0 }}</th>
+			<th>{{ showingList.1 }}</th>
+			<th>{{ showingList.2 }}</th> 
+			<th><form action="/submitrating" method="post">
+				<input type="number" name="Rating" min="1" max="5" value={{ showingList.3 }}>
+				<input type="hidden" name="Showingid" value={{ showingList.4 }}>
+				<input type="submit" value="Update">
+			</form></th>
 		{% endfor %}
 		</tr>
 	</table>

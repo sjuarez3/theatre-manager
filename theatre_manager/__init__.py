@@ -96,6 +96,50 @@ def editProfile():
     cnx.commit()
     cnx.close()
     return render_template('customerprofile.html', FirstName=request.form['FirstName'], LastName=request.form['LastName'], EmailAddress=request.form['EmailAddress'], Sex=request.form['Sex'], idCustomer=idCustomer)
+
+@app.route("/ratemovie")
+def rateMovie():
+	idCustomer = session.get('idCustomer', None)
+	cnx = mysql.connector.connect(user='root', database='MovieTheatre')
+	cursor = cnx.cursor()
+	query = ("SELECT Movie.MovieName, DATE_FORMAT(Showing.ShowingDateTime, '%M-%d-%Y') AS ShowingDate, "
+	         "TIME_FORMAT(Showing.ShowingDateTime,'%r') AS ShowingTime, Attend.Rating, Showing.idShowing "
+	         "FROM Attend, Customer, Movie, Showing " 
+			 "WHERE Customer.idCustomer = Attend.Customer_idCustomer "
+			 "AND Attend.Showing_idShowing = Showing.idShowing " 
+			 "AND Movie.idMovie = Showing.Movie_idMovie " 
+			 "AND Attend.Customer_idCustomer = " + str(idCustomer) + 
+			 " ORDER BY Showing.ShowingDateTime DESC")
+	cursor.execute(query)
+	showings=cursor.fetchall()
+	cnx.close()
+	
+	return render_template('ratemovie.html',showings=showings)
+
+@app.route("/submitrating", methods=["POST"])	
+def saveRating():
+	idCustomer = str(session.get('idCustomer', None))
+	idShowing = str(request.form['Showingid'])
+	rating=str(request.form['Rating'])
+	
+	cnx = mysql.connector.connect(user='root', database='MovieTheatre')
+	cursor = cnx.cursor()
+	query = ("UPDATE Attend SET Rating =" + rating +  " WHERE Customer_idCustomer =" + idCustomer + " AND Showing_idShowing =" + idShowing)
+
+	cursor.execute(query)
+	cnx.commit()
+	cnx.close()
+	
+	return rateMovie()
+
+@app.route("/startMenu", methods=["POST"])	
+def returnStartMenu():
+    return render_template('mainmenu.html', FirstName=session.get('FirstName', None), LastName=session.get('LastName', None), EmailAddress=session.get('EmailAddress', None), Sex=session.get('Sex', None))	
+
+@app.route("/logout", methods=["POST"])	
+def signOut():
+	return render_template('login.html')
+
 	
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
