@@ -5,6 +5,8 @@ app = Flask(__name__)
 app.secret_key = "key"
 
 import theatre_manager.staff
+import theatre_manager.movie
+import theatre_manager.customer
 
 @app.route("/")
 def login():

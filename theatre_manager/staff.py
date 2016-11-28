@@ -6,28 +6,6 @@ import mysql.connector
 def staff():
     return render_template('staff.html')
 	
-@app.route('/listmovies')
-def listMovies():
-    cnx = mysql.connector.connect(user='root', database='MovieTheatre')
-    cursor = cnx.cursor()
-    query = (
-        "SELECT * FROM Movie ORDER BY MovieName")
-    cursor.execute(query)
-    movies=cursor.fetchall()
-    cnx.close()
-    return render_template('listmovies.html', movies=movies)
-	
-@app.route('/listcustomers')
-def listCustomers():
-    cnx = mysql.connector.connect(user='root', database='MovieTheatre')
-    cursor = cnx.cursor()
-    query = (
-        "SELECT * FROM Customer ORDER BY LastName")
-    cursor.execute(query)
-    customers=cursor.fetchall()
-    cnx.close()
-    return render_template('listcustomers.html', customers=customers)
-	
 @app.route('/attendance')
 def attendance():
     cnx = mysql.connector.connect(user='root', database='MovieTheatre')

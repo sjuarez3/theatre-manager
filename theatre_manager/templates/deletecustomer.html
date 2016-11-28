@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Theatre Manager</title>
+<style>
+table {
+    border-collapse: collapse;
+}
+
+td, th {
+    border: 1px solid black;
+    text-align: center;
+    padding: 6px;
+}
+</style>
+</head>
+<body>
+	<h1>Delete Customer</h1>
+  <div>
+	<table>
+		<tr>
+		  <th>CustomerID</th>
+		  <th>FirstName</th>
+		  <th>LastName</th>
+		  <th>EmailAddress</th>
+		  <th>Sex</th>
+		  <th>Delete</th>
+		</tr>
+		{% for customer in customers %}
+		<tr>
+			<form action="/removecustomer" method="post">
+				<th><input type="text" name="idCustomer" value="{{ customer.0 }}" readonly></th>
+				<th><input type="text" name="FirstName" value="{{ customer.1 }}"></th>
+				<th><input type="text" name="LastName" value="{{ customer.2}}"></th>
+				<th><input type="text" name="EmailAddress" value="{{ customer.3}}"></th>
+				<th><input type="text" name="Sex" value="{{ customer.4}}"></th>
+				<th><input type="submit" value="Delete"></th>
+			</form>
+		{% endfor %}
+		</tr>
+	</table>
+  </div>
+  <form action="/staffmenu" method="post">
+    <br>
+    <input type="submit" value="Return to Staff Management">
+  </form>
+ </body>
+ </html>
