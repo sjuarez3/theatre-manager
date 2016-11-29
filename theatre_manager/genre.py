@@ -26,11 +26,10 @@ def submitGenre():
 def removeGenre():
 	cnx = mysql.connector.connect(user='root', database='MovieTheatre')
 	cursor = cnx.cursor()
-	movie_id = request.form['MovieID']
-	genre = request.form['Genre']
+	genre = (request.form['MovieID'], request.form['Genre'])
 	
-	delete_genre = ("DELETE FROM Genre WHERE Movie_idMovie =" + movie_id + " AND Genre ='" + genre +"'")
-	cursor.execute(delete_genre)
+	delete_genre = ("DELETE FROM Genre WHERE Movie_idMovie = %s AND Genre = %s")
+	cursor.execute(delete_genre, genre)
     
 	cnx.commit()
 	cnx.close()
@@ -59,9 +58,9 @@ def updateGenre():
 	cnx = mysql.connector.connect(user='root', database='MovieTheatre')
 	cursor = cnx.cursor()
 	data_Movie = (request.form['MovieName'])
-	update_genre = ("UPDATE Genre SET Genre =" + genre + " WHERE Movie_idMovie = (SELECT idMovie FROM Movie WHERE MovieName ="+ data_Movie +")")
+	update_genre = ("UPDATE Genre SET Genre =" + genre + " WHERE Movie_idMovie = (SELECT idMovie FROM Movie WHERE MovieName = %s)")
 	print("Attempting: " + update_genre)
-	cursor.execute(update_room)
+	cursor.execute(update_room, data_Movie)
 	cnx.commit()
 	cnx.close()
 	
