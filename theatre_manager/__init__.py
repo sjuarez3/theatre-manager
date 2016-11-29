@@ -8,6 +8,7 @@ import theatre_manager.staff
 import theatre_manager.movie
 import theatre_manager.customer
 import theatre_manager.theatreRoom
+import theatre_manager.genre
 
 @app.route("/")
 def login():

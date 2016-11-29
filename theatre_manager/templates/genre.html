@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Theatre Manager</title>
+<style>
+table {
+    border-collapse: collapse;
+}
+
+td, th {
+    border: 1px solid black;
+    text-align: left;
+    padding: 6px;
+}
+</style>
+<script type="text/javascript">
+function showTable(){
+  if({{ AddGenre }}){
+	document.getElementById("updateGenre").style.display="none";
+	document.getElementById("listGenre").style.display="none";
+	document.getElementById("deleteGenre").style.display="none";
+  }
+  else if ({{ EditGenre }}){
+    document.getElementById("addGenre").style.display="none";
+	document.getElementById("listGenre").style.display="none";
+	document.getElementById("deleteGenre").style.display="none";
+  }
+  else if ({{ DeleteGenre }}){
+    document.getElementById("addGenre").style.display="none";
+	document.getElementById("updateGenre").style.display="none";
+	document.getElementById("listGenre").style.display="none";
+  }
+  else if ({{ ListGenre }}){
+    document.getElementById("addGenre").style.display="none";
+	document.getElementById("updateGenre").style.display="none";
+	document.getElementById("deleteGenre").style.display="none";
+  }
+}
+</script>
+</head>
+<body onload="showTable()">
+	<div id="addGenre">
+	  <h1>Add Movie Genre</h1>
+	  <form action="/submitgenre" method="post">
+		 MovieTitle:<br>
+		 <input type="text" name="MovieTitle"><br>
+		 Genre:<br>
+		 <input type="text" name="Genre"><br>
+		 <br>
+		 <input type="submit" value="Submit">
+	  </form>
+	</div>
+	
+	<div id="updateGenre">
+	  <h1>Update Movie Genre</h1>
+	  <table>
+		<tr>
+		  <th>MovieTitle</th>
+		  <th>Genre</th>
+		  <th></th>
+		</tr>
+		{% for genre in genres %}
+		<tr>
+			<form action="/updateroom" method="post">
+				<th><input type="text" name="MovieTitle" value="{{ genre.0 }}" readonly></th>
+				<th><input type="text" name="Genre" value="{{ genre.1 }}"></th>
+				<input type="hidden" name="MovieID" value="{{ genre.2 }}">
+				<th><input type="submit" value="Update"></th>
+			</form>
+		{% endfor %}
+		</tr>
+	  </table>
+	</div>
+	
+	<div id="deleteGenre">
+	<h1>Delete Movie Genre</h1>
+	<table>
+		<tr>
+		  <th>MovieTitle</th>
+		  <th>Genre</th>
+		  <th></th>
+		</tr>
+		{% for genre in genres %}
+		<tr>
+		  <th>{{ genre.0 }}</th>
+		  <th>{{ genre.1 }}</th>
+		  <th>
+		    <form action="/removegenre" method="post">
+			<input type="hidden" name="Genre" value="{{ genre.1 }}">	
+			<input type="hidden" name="MovieID" value="{{ genre.2 }}">				
+		    <input type="submit" value="Delete">
+		    </form>
+		  </th>
+		{% endfor %}
+		</tr>
+	</table>
+   </div>
+	
+	<div id="listGenre">
+	<h1>List of all Movie Genres</h1>
+	<table>
+		<tr>
+			<th>MovieTitle</th>
+			<th>Genre</th>
+		</tr>
+		{% for genre in genres %}
+		<tr>
+			<th>{{ genre.0 }}</th>
+			<th>{{ genre.1 }}</th> 
+		{% endfor %}
+		</tr>
+	</table>
+	</div>
+	
+	<form action="/staffmenu" method="post">
+    <br>
+    <input type="submit" value="Return to Staff Management">
+  </form>
+ </body>
+ </html>
