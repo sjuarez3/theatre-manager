@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Theatre Manager</title>
+<style>
+table {
+    border-collapse: collapse;
+}
+
+td, th {
+    border: 1px solid black;
+    text-align: center;
+    padding: 6px;
+}
+</style>
+<script type="text/javascript">
+function showTable(){
+  if({{ AddRoom }}){
+	document.getElementById("updateRooms").style.display="none";
+	document.getElementById("listRooms").style.display="none";
+	document.getElementById("deleteRooms").style.display="none";
+  }
+  else if ({{ EditRoom }}){
+    document.getElementById("addRooms").style.display="none";
+	document.getElementById("listRooms").style.display="none";
+	document.getElementById("deleteRooms").style.display="none";
+  }
+  else if ({{ DeleteRoom }}){
+    document.getElementById("addRooms").style.display="none";
+	document.getElementById("updateRooms").style.display="none";
+	document.getElementById("listRooms").style.display="none";
+  }
+  else if ({{ ListRoom }}){
+    document.getElementById("addRooms").style.display="none";
+	document.getElementById("updateRooms").style.display="none";
+	document.getElementById("deleteRooms").style.display="none";
+  }
+}
+</script>
+</head>
+<body onload="showTable()">
+<h1>List of all Theatre Rooms</h1>
+	
+	<div id="addRooms">
+	  <form action="/submitroom" method="post">
+		 RoomNumber:<br>
+		 <input type="text" name="RoomNumber"><br>
+		 Capacity:<br>
+		 <input type="text" name="Capacity"><br>
+		 <br>
+		 <input type="submit" value="Submit">
+	  </form>
+	</div>
+	
+	<div id="updateRooms">
+	  <table>
+		<tr>
+		  <th>RoomNumber</th>
+		  <th>Capacity</th>
+		  <th></th>
+		</tr>
+		{% for room in rooms %}
+		<tr>
+			<form action="/updateroom" method="post">
+				<th><input type="text" name="RoomNumber" value="{{ room.0 }}" readonly></th>
+				<th><input type="text" name="Capacity" value="{{ room.1 }}"></th>
+				<th><input type="submit" value="Update"></th>
+			</form>
+		{% endfor %}
+		</tr>
+	  </table>
+	</div>
+	
+	<div id="deleteRooms">
+	<table>
+		<tr>
+		  <th>RoomNumber</th>
+		  <th>Capacity</th>
+		  <th></th>
+		</tr>
+		{% for room in rooms %}
+		<tr>
+		  <th>{{ room.0 }}</th>
+		  <th>{{ room.1 }}</th>
+		  <th>
+		    <form action="/removeroom" method="post">
+            <input type="hidden" name="RoomNumber" value="{{ room.0 }}">
+			<input type="hidden" name="Capacity" value="{{ room.1}}">		  
+		    <input type="submit" value="Delete">
+		    </form>
+		  </th>
+		{% endfor %}
+		</tr>
+	</table>
+   </div>
+	
+	<div id="listRooms">
+	<table>
+		<tr>
+			<th>RoomNumber</th>
+			<th>Capacity</th>
+		</tr>
+		{% for room in rooms %}
+		<tr>
+			<th>{{ room.0 }}</th>
+			<th>{{ room.1 }}</th> 
+		{% endfor %}
+		</tr>
+	</table>
+	</div>
+	
+	<form action="/staffmenu" method="post">
+    <br>
+    <input type="submit" value="Return to Staff Management">
+  </form>
+ </body>
+ </html>

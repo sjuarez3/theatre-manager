@@ -7,6 +7,7 @@ app.secret_key = "key"
 import theatre_manager.staff
 import theatre_manager.movie
 import theatre_manager.customer
+import theatre_manager.theatreRoom
 
 @app.route("/")
 def login():
