@@ -26,13 +26,13 @@ def submitTheatreRoom():
 def removeTheatreRoom():
 	cnx = mysql.connector.connect(user='root', database='MovieTheatre')
 	cursor = cnx.cursor()
-	room_number = request.form['RoomNumber']
+	room_number = [request.form['RoomNumber']]
 	
-	delete_room = ("DELETE FROM Showing WHERE TheatreRoom_RoomNumber =" + room_number)
-	cursor.execute(delete_room)
+	delete_showing = ("DELETE FROM Showing WHERE TheatreRoom_RoomNumber = %s")
+	cursor.execute(delete_showing, room_number)
     
-	delete_room = ("DELETE FROM TheatreRoom WHERE RoomNumber =" + room_number)
-	cursor.execute(delete_room)
+	delete_room = ("DELETE FROM TheatreRoom WHERE RoomNumber = %s")
+	cursor.execute(delete_room, room_number)
 	cnx.commit()
 	cnx.close()
 	
@@ -55,14 +55,13 @@ def deleteTheatreRoom():
 
 @app.route("/updateroom", methods=["POST"])	
 def updateTheatreRoom():
-	roomNumber = request.form['RoomNumber']
-    
 	cnx = mysql.connector.connect(user='root', database='MovieTheatre')
 	cursor = cnx.cursor()
-	data_capacity = (request.form['Capacity'])
-	update_room = ("UPDATE TheatreRoom SET Capacity =" + data_capacity + " WHERE RoomNumber = " + str(roomNumber))
+	data_room = (request.form['Capacity'], request.form['RoomNumber'])
+	update_room = ("UPDATE TheatreRoom SET Capacity = %s WHERE RoomNumber = %s")
+	
 	print("Attempting: " + update_room)
-	cursor.execute(update_room)
+	cursor.execute(update_room, data_room)
 	cnx.commit()
 	cnx.close()
 	
