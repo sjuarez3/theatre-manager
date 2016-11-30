@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html>
 <head>
 <title>Theatre Manager</title>
@@ -19,13 +19,22 @@ td, th {
   
   <form action="/submitsearch" method="post">
 	  Start Date:
-	  <input type="date" name="startDate"><br></br>
+	  <input type="date" name="startDate" style="margin-right: 17px;">
 	  End Date:
-	  <input type="date" name="endDate"><br></br>
+	  <input type="date" name="endDate" style="margin-right: 17px;">
 	  Movie Title:
-	  <input type="text" name="MovieName"><br></br>
+	  <input type="text" name="MovieName" style="margin-right: 17px;"><br></br>
+	  Genre:
+	  <select name="genre" style="margin-right: 17px;">
+	  <option value="">--Select a Genre--</option>
+	  {% for movieGenre in genres %}
+      <option value={{ movieGenre.0 }}>{{ movieGenre.0 }}</option>
+	  {% endfor %}
+      </select>
+	  <input type="checkbox" name="Seats" value="Yes"> Only Available Seats
+	  <br></br>
 	  <th><input type="submit" value="Search"></th>
-</form>
+  </form>
   <br>
   <br>
   <div>
@@ -38,6 +47,7 @@ td, th {
 		  <th>Ticket Price</th>
 		  <th>Genre</th>
 		  <th>Movie Title</th>
+		  <th></th>
 		</tr>
 		{% for showing in showings %}
 		<tr>
@@ -48,6 +58,7 @@ td, th {
 				<th>${{ showing.4}}</th>
 				<th>{{ showing.5}}</th>
 				<th>{{ showing.6}}</th>
+				<th><input type="submit" value="Buy"></th>
 		{% endfor %}
 		</tr>
 	</table>

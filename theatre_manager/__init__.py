@@ -133,30 +133,51 @@ def signOut():
 
 @app.route('/searchshowtimes')
 def searchShowtimes(showings=None):
-    showings=showings
-    return render_template('searchshowtimes.html', showings=showings)
+	showings=showings
+	cnx = mysql.connector.connect(user='root', database='MovieTheatre')
+	cursor = cnx.cursor()
+	if not showings:
+		query = (
+        "SELECT Showing.idShowing, Showing.ShowingDateTime, Showing.Movie_idMovie, Showing.TheatreRoom_RoomNumber,FORMAT(Showing.TicketPrice,2), Genre.Genre, Movie.MovieName, TheatreRoom.RoomNumber FROM Showing JOIN Genre "
+		"ON Showing.Movie_idMovie = Genre.Movie_idMovie JOIN TheatreRoom ON Showing.TheatreRoom_RoomNumber "
+		"= TheatreRoom.RoomNumber JOIN Movie ON Showing.Movie_idMovie = Movie.idMovie")
+		cursor.execute(query)
+		showings=cursor.fetchall()
+		
+	genreQuery = ("SELECT DISTINCT Genre FROM Genre")
+	cursor.execute(genreQuery)
+	genres=cursor.fetchall()
+	cnx.close()
+	return render_template('searchshowtimes.html', showings=showings, genres=genres)
 	
 @app.route('/submitsearch', methods=["POST"])
 def submitSearch():
 
-    MovieName = request.form['MovieName']
-    startDate = request.form['startDate']
-    endDate = request.form['endDate']
+	MovieName = [request.form['MovieName']]
+	startDate = request.form['startDate']
+	endDate = request.form['endDate']
+	genre = request.form['genre']
 
-    cnx = mysql.connector.connect(user='root', database='MovieTheatre')
-    cursor = cnx.cursor()
-    query = (
-        "SELECT Showing.*, Genre.Genre, Movie.MovieName, TheatreRoom.RoomNumber FROM Showing JOIN Genre "
+	cnx = mysql.connector.connect(user='root', database='MovieTheatre')
+	cursor = cnx.cursor()
+	query = (
+        "SELECT Showing.idShowing, Showing.ShowingDateTime, Showing.Movie_idMovie, Showing.TheatreRoom_RoomNumber,FORMAT(Showing.TicketPrice,2) as TicketPrice, Genre.Genre, Movie.MovieName, TheatreRoom.RoomNumber FROM Showing JOIN Genre "
 		"ON Showing.Movie_idMovie = Genre.Movie_idMovie JOIN TheatreRoom ON Showing.TheatreRoom_RoomNumber "
-		"= TheatreRoom.RoomNumber JOIN Movie ON Showing.Movie_idMovie = Movie.idMovie WHERE "
-		"Movie.MovieName = '" + MovieName + "' AND Showing.ShowingDateTime > '" + startDate +"' "
-		"AND Showing.ShowingDateTime < '" + endDate +"'")
+		"= TheatreRoom.RoomNumber JOIN Movie ON Showing.Movie_idMovie = Movie.idMovie WHERE")
+	if MovieName != '':
+		query += " Movie.MovieName = %s "
+	if startDate != '':
+		query += " Showing.ShowingDateTime > %s AND"
+	if endDate != '':
+		query += " Showing.ShowingDateTime < %s AND"
+	if genre != '':
+		query += " Genre.Genre = %s"
 		
-    print("Attempting " + query)
-    cursor.execute(query)
-    showings=cursor.fetchall()
-    cnx.close()
-    return searchShowtimes(showings)
+	print("Attempting " + query)
+	cursor.execute(query,MovieName)
+	showings=cursor.fetchall()
+	cnx.close()
+	return searchShowtimes(showings)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
