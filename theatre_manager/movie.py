@@ -47,13 +47,37 @@ def deleteMovie():
 def removeMovie():
     cnx = mysql.connector.connect(user='root', database='MovieTheatre')
     cursor = cnx.cursor()
-    delete_stmt = (
+	
+    movieId = request.form['idMovie']
+	
+    select_stmt = ("SELECT idShowing FROM Showing WHERE Movie_idMovie = '" + movieId + "'")
+    print("Attempting " + select_stmt)
+    cursor.execute(select_stmt, movieId)
+    showingId=cursor.fetchall()
+    print(showingId)
+    showingId = ''.join(str(v) for v in showingId)
+    print(showingId)
+    showingId = showingId.translate({ord(c): None for c in '()'})
+    print(showingId)
+    showingId = showingId[:-1]
+    print(showingId)
+	
+    attendQuery = ("DELETE FROM Attend WHERE Showing_idShowing in (" + showingId + ")")
+    cursor.execute(attendQuery, movieId)
+	
+    showingQuery = ("DELETE FROM Showing WHERE Movie_idMovie = '" + movieId + "'")
+    cursor.execute(showingQuery, movieId)
+	
+    genreQuery = ("DELETE FROM Genre WHERE Movie_idMovie = '" + movieId + "'")
+    cursor.execute(genreQuery)
+	
+    movieQuery = (
     "DELETE FROM Movie WHERE MovieName = %s AND MovieYear = %s AND idMovie = %s")
-    data = (request.form['MovieName'], request.form['MovieYear'], request.form['idMovie'])
-    cursor.execute(delete_stmt, data)
+    movieData = (request.form['MovieName'], request.form['MovieYear'], movieId)
+    cursor.execute(movieQuery, movieData)
+	
     cnx.commit()
     cnx.close()
-	
     return deleteMovie()
 	
 @app.route("/editmovie")

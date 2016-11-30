@@ -47,10 +47,16 @@ def deleteCustomer():
 def removeCustomer():
     cnx = mysql.connector.connect(user='root', database='MovieTheatre')
     cursor = cnx.cursor()
-    delete_stmt = (
+	
+    idCustomer = request.form['idCustomer']
+	
+    delete_attend = ("DELETE FROM Attend WHERE Customer_idCustomer = '" + idCustomer +"'")
+    cursor.execute(delete_attend, idCustomer)
+	
+    delete_customer = (
     "DELETE FROM Customer WHERE FirstName = %s AND LastName = %s AND EmailAddress = %s ")
     data = (request.form['FirstName'], request.form['LastName'], request.form['EmailAddress'])
-    cursor.execute(delete_stmt, data)
+    cursor.execute(delete_customer, data)
     cnx.commit()
     cnx.close()
 	
