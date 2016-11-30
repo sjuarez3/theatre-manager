@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Theatre Manager</title>
+<style>
+table {
+    border-collapse: collapse;
+	table-layout:fixed;
+}
+
+td, th {
+    border: 1px solid black;
+    text-align: center;
+    padding: 6px;
+	overflow:hidden;
+}
+</style>
+<script type="text/javascript">
+function showTable(){
+  if({{ AddShowing }}){
+	document.getElementById("updateShowings").style.display="none";
+	document.getElementById("listShowings").style.display="none";
+	document.getElementById("deleteShowings").style.display="none";
+  }
+  else if ({{ EditShowing }}){
+    document.getElementById("addShowings").style.display="none";
+	document.getElementById("listShowings").style.display="none";
+	document.getElementById("deleteShowings").style.display="none";
+  }
+  else if ({{ DeleteShowing }}){
+    document.getElementById("addShowings").style.display="none";
+	document.getElementById("updateShowings").style.display="none";
+	document.getElementById("listShowings").style.display="none";
+  }
+  else if ({{ ListShowing }}){
+    document.getElementById("addShowings").style.display="none";
+	document.getElementById("updateShowings").style.display="none";
+	document.getElementById("deleteShowings").style.display="none";
+  }
+}
+</script>
+</head>
+<body onload="showTable()">
+	<div id="addShowings">
+	<h1>Add Showing</h1>
+	  <form action="/submitshowing" method="post" style="float: left; margin-right: 100px;">
+		 ShowingDateTime<br>
+		 (YYYY-MM-DD HH:MM:SS):<br>
+		 <input type="text" name="ShowingDateTime"><br>
+		 MovieID:<br>
+		 <input type="text" name="Movie_idMovie"><br>
+		 TheatreRoom Number:<br>
+		 <input type="text" name="TheatreRoom"><br>
+		 Price:<br>
+		 <input type="text" name="Price"><br>
+		 <br>
+		 <input type="submit" value="Submit">
+	  </form>
+	  <table style="float: left; margin-right: 17px;">
+		<tr>
+			<th>MovieID</th>
+			<th>MovieTitle</th>
+		</tr>
+		{% for movie in movies %}
+		<tr>
+			<th style="padding: 1px; font-size:80%;">{{ movie.0 }}</th>
+			<th style="padding: 1px; font-size:80%;">{{ movie.1 }}</th>
+		{% endfor %}
+		</tr>
+	  </table>
+	  <table style="float: left">
+		<tr>
+			<th>TheatreRoomNumber</th>
+			<th>Capacity</th>
+		</tr>
+		{% for room in rooms %}
+		<tr>
+			<th style="padding: 1px; font-size:80%;">{{ room.0 }}</th>
+			<th style="padding: 1px; font-size:80%;">{{ room.1 }}</th>
+		{% endfor %}
+		</tr>
+	  </table>
+	</div>
+	
+	<div id="updateShowings">
+	  <h1>Update Showing</h1>
+	  <table style="float: left">
+		<tr>
+		  <th>ShowingDateTime <br>(YYYY-MM-DD HH:MM:SS)</th>
+		  <th>MovieID</th>
+		  <th>TheatreRoomNumber</th>
+		  <th>Price</th>
+		  <th></th>
+		</tr>
+		{% for show in showings %}
+		<tr>
+			<form action="/updateshowing" method="post">
+				<input type="hidden" name="idShowing" value="{{ show.0 }}">
+				<th><input type="text" name="ShowingDateTime" value="{{ show.1 }}"></th>
+				<th><input type="text" name="Movie_idMovie" value="{{ show.2 }}"></th>
+				<th><input type="text" name="TheatreRoom" value="{{ show.3 }}"></th>
+				<th><input type="text" name="Price" value="{{ show.4 }}"></th>
+				<th><input type="submit" value="Update"></th>
+			</form>
+		{% endfor %}
+		</tr>
+	  </table>
+	  <table style="float: right; margin-left: 17px;">
+		<tr>
+			<th>MovieID</th>
+			<th>MovieTitle</th>
+		</tr>
+		{% for movie in movies %}
+		<tr>
+			<th style="padding: 1px; font-size:80%;">{{ movie.0 }}</th>
+			<th style="padding: 1px; font-size:80%;">{{ movie.1 }}</th>
+		{% endfor %}
+		</tr>
+	  </table>
+	  <table style="float: right; margin-left: 17px;">
+		<tr>
+			<th>TheatreRoomNumber</th>
+			<th>Capacity</th>
+		</tr>
+		{% for room in rooms %}
+		<tr>
+			<th style="padding: 1px; font-size:80%;">{{ room.0 }}</th>
+			<th style="padding: 1px; font-size:80%;">{{ room.1 }}</th>
+		{% endfor %}
+		</tr>
+	  </table>
+	</div>
+	
+	<div id="deleteShowings">
+	<h1>Delete Showing</h1>
+	<table style="float: left">
+		<tr>
+		  <th>idShowing</th>
+		  <th>ShowingDateTime</th>
+		  <th>MovieID</th>
+		  <th>TheatreRoomNumber</th>
+		  <th>Price</th>
+		  <th></th>
+		</tr>
+		{% for show in showings %}
+		<tr>
+		  <th>{{ show.0 }}</th>
+		  <th>{{ show.1 }}</th>
+		  <th>{{ show.2 }}</th>
+		  <th>{{ show.3 }}</th>
+		  <th>${{ show.4 }}</th>
+		  <th>
+		    <form action="/removeshowing" method="post">
+            <input type="hidden" name="idShowing" value="{{ show.0 }}">
+			<input type="hidden" name="Movie_idMovie" value="{{ show.2}}">		  
+		    <input type="submit" value="Delete">
+		    </form>
+		  </th>
+		{% endfor %}
+		</tr>
+	</table>
+	<table style="float: right">
+		<tr>
+			<th>MovieID</th>
+			<th>MovieTitle</th>
+		</tr>
+		{% for movie in movies %}
+		<tr>
+			<th style="padding: 1px; font-size:80%;">{{ movie.0 }}</th>
+			<th style="padding: 1px; font-size:80%;">{{ movie.1 }}</th>
+		{% endfor %}
+		</tr>
+	</table>
+   </div>
+	
+	<div id="listShowings">
+	<h1>List of all Showings</h1>
+	<table>
+		<tr>
+			<th>idShowing</th>
+			<th>ShowingDateTime</th>
+			<th>Movie_idMovie</th>
+			<th>TheatreRoom_RoomNumber</th>
+			<th>Price</th>
+		</tr>
+		{% for show in showings %}
+		<tr>
+			<th>{{ show.0 }}</th>
+			<th>{{ show.1 }}</th>
+			<th>{{ show.2 }}</th>
+			<th>{{ show.3 }}</th>
+			<th>${{ show.4 }}</th>
+		{% endfor %}
+		</tr>
+	</table>
+	</div>
+	
+	<form action="/staffmenu" method="post" style="clear:both;">
+    <br>
+    <input type="submit" value="Return to Staff Management">
+    </form>
+ </body>
+ </html>

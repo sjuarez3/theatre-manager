@@ -9,6 +9,7 @@ import theatre_manager.movie
 import theatre_manager.customer
 import theatre_manager.theatreRoom
 import theatre_manager.genre
+import theatre_manager.showing
 
 @app.route("/")
 def login():
