@@ -50,19 +50,7 @@ def removeMovie():
 	
     movieId = request.form['idMovie']
 	
-    select_stmt = ("SELECT idShowing FROM Showing WHERE Movie_idMovie = '" + movieId + "'")
-    print("Attempting " + select_stmt)
-    cursor.execute(select_stmt, movieId)
-    showingId=cursor.fetchall()
-    print(showingId)
-    showingId = ''.join(str(v) for v in showingId)
-    print(showingId)
-    showingId = showingId.translate({ord(c): None for c in '()'})
-    print(showingId)
-    showingId = showingId[:-1]
-    print(showingId)
-	
-    attendQuery = ("DELETE FROM Attend WHERE Showing_idShowing in (" + showingId + ")")
+    attendQuery = ("DELETE FROM Attend WHERE Showing_idShowing in (SELECT idShowing FROM Showing WHERE Movie_idMovie = '" + movieId + "')")
     cursor.execute(attendQuery, movieId)
 	
     showingQuery = ("DELETE FROM Showing WHERE Movie_idMovie = '" + movieId + "'")
