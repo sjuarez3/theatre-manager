@@ -21,12 +21,12 @@ def signup():
 	
 @app.route('/viewprofile')
 def viewProfile():
-    FirstName = session.get('FirstName', None)
-    LastName = session.get('LastName', None)
-    EmailAddress = session.get('EmailAddress', None)
-    Sex = session.get('Sex', None)
-    idCustomer = session.get('idCustomer', None)
-    return render_template('customerprofile.html', FirstName=FirstName, LastName=LastName, EmailAddress=EmailAddress, Sex=Sex, idCustomer=idCustomer)
+	FirstName = session.get('FirstName', None)
+	LastName = session.get('LastName', None)
+	EmailAddress = session.get('EmailAddress', None)
+	Sex = session.get('Sex', None)
+	idCustomer = session.get('idCustomer', None)
+	return render_template('customerprofile.html', FirstName=FirstName, LastName=LastName, EmailAddress=EmailAddress, Sex=Sex.decode("utf-8"), idCustomer=idCustomer)
 
 @app.route('/index', methods=["POST"])
 def index():
