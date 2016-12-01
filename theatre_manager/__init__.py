@@ -13,7 +13,8 @@ import theatre_manager.showing
 
 @app.route("/")
 def login():
-    return render_template('login.html')
+	error="false"
+	return render_template('login.html',error=error)
 	
 @app.route('/signup')
 def signup():
@@ -44,30 +45,36 @@ def index():
 
 @app.route('/mainMenu', methods=["POST"])
 def mainMenu():
-    cnx = mysql.connector.connect(user='root', database='MovieTheatre')
-    cursor = cnx.cursor()
+	cnx = mysql.connector.connect(user='root', database='MovieTheatre')
+	cursor = cnx.cursor()
 
-    FirstName = request.form['FirstName']
-    session['FirstName'] = request.form['FirstName']
-    LastName = request.form['LastName']
-    session['LastName'] = request.form['LastName']
-    EmailAddress = request.form['EmailAddress']
-    session['EmailAddress'] = request.form['EmailAddress']
+	FirstName = request.form['FirstName']
+	session['FirstName'] = request.form['FirstName']
+	LastName = request.form['LastName']
+	session['LastName'] = request.form['LastName']
+	EmailAddress = request.form['EmailAddress']
+	session['EmailAddress'] = request.form['EmailAddress']
+	idCustomer=""
+	Sex=""
 	
-    query = ("SELECT * FROM Customer WHERE FirstName = '" + FirstName + "' AND LastName = '" + LastName + "' AND EmailAddress = '" + EmailAddress + "'")
-    cursor.execute(query)
-    print("Attempting: " + query)
-    customers=cursor.fetchall()
+	query = ("SELECT * FROM Customer WHERE FirstName = '" + FirstName + "' AND LastName = '" + LastName + "' AND EmailAddress = '" + EmailAddress + "'")
+	cursor.execute(query)
+	print("Attempting: " + query)
+	customers=cursor.fetchall()
 	
-    for row in customers:
-        idCustomer=row[0]
-        session['idCustomer']=idCustomer
-        Sex=row[4]
-        session['Sex'] = Sex.decode("utf-8")
+	if not customers:
+		error="true"
+		return render_template('login.html', error=error)
 	
-    cnx.commit()
-    cnx.close()
-    return render_template('mainmenu.html', FirstName=request.form['FirstName'], LastName=request.form['LastName'], EmailAddress=request.form['EmailAddress'], Sex=Sex.decode("utf-8"))
+	for row in customers:
+		idCustomer=row[0]
+		session['idCustomer']=idCustomer
+		Sex=row[4]
+		session['Sex'] = Sex.decode("utf-8")
+	
+	cnx.commit()
+	cnx.close()
+	return render_template('mainmenu.html', FirstName=request.form['FirstName'], LastName=request.form['LastName'], EmailAddress=request.form['EmailAddress'], Sex=Sex)
 
 @app.route("/moviesWatched")
 def movieSeen():
@@ -129,6 +136,7 @@ def returnStartMenu():
 
 @app.route("/logout", methods=["POST"])	
 def signOut():
+	error="false"
 	return render_template('login.html')
 
 @app.route('/searchshowtimes')

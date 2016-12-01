@@ -2,19 +2,32 @@
 <html>
 <head>
 <title>Theatre Manager</title>
+<script>
+function warningMessage(){
+	if({{ error }}){
+		document.getElementById("firstname").style="background-color:#FF5F5F;";
+		document.getElementById("lastname").style="background-color:#FF5F5F;";
+		document.getElementById("email").style="background-color:#FF5F5F;";
+		document.getElementById("warningMessage").style.display="block";
+	}
+}
+</script>
 </head>
-<body>
+<body onload="warningMessage()">
 	<h1>Theatre Manager</h1>
 	<div>
 	<h3>Have an account? Login.</h3>
 	<form action="/mainMenu" method="post">
 		 First name:<br>
-		 <input type="text" name="FirstName"><br>
+		 <input id="firstname" type="text" name="FirstName"><br>
 		 Last name:<br>
-		 <input type="text" name="LastName"><br>
+		 <input id="lastname" type="text" name="LastName"><br>
 		 Email:<br>
-		 <input type="text" name="EmailAddress"><br>
+		 <input id="email" type="text" name="EmailAddress"><br>
 		 <br>
+		 <div id="warningMessage" style="display:none;">
+		   <font color="red">Incorrect Login. Please Try Again</font><br/>
+	     </div>
 		 <input type="submit" value="Login">
 	 </form>
 	</div>
