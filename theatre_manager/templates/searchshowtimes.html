@@ -21,8 +21,12 @@ function checkBoxValue() {
 }
 
 function disableBuyButton(){
+  var elementExist = document.getElementById("purchaseTicket");
   {% for attend in attendedshowings %}
-    document.getElementById("purchaseTicket{{ attend.0 }}").disabled=true;
+	var elementExist = document.getElementById("purchaseTicket{{ attend.0 }}");
+	if(elementExist != null){
+		document.getElementById("purchaseTicket{{ attend.0 }}").disabled=true;
+	}
   {% endfor %}
 }
 </script>
