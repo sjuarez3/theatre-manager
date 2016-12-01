@@ -138,9 +138,9 @@ def searchShowtimes(showings=None):
 	cursor = cnx.cursor()
 	if not showings:
 		query = (
-        "SELECT Showing.idShowing, Showing.ShowingDateTime, Showing.Movie_idMovie, Showing.TheatreRoom_RoomNumber,FORMAT(Showing.TicketPrice,2), Genre.Genre, Movie.MovieName, TheatreRoom.RoomNumber FROM Showing JOIN Genre "
+        "SELECT Showing.idShowing, DATE_FORMAT(Showing.ShowingDateTime, '%M-%d-%Y') AS ShowingDate, TIME_FORMAT(Showing.ShowingDateTime,'%r') AS ShowingTime, Showing.Movie_idMovie, Showing.TheatreRoom_RoomNumber,FORMAT(Showing.TicketPrice,2), GROUP_CONCAT(DISTINCT(Genre.Genre)) as Genre, Movie.MovieName, TheatreRoom.RoomNumber FROM Showing JOIN Genre "
 		"ON Showing.Movie_idMovie = Genre.Movie_idMovie JOIN TheatreRoom ON Showing.TheatreRoom_RoomNumber "
-		"= TheatreRoom.RoomNumber JOIN Movie ON Showing.Movie_idMovie = Movie.idMovie")
+		"= TheatreRoom.RoomNumber JOIN Movie ON Showing.Movie_idMovie = Movie.idMovie GROUP by Movie_idMovie, idShowing ORDER BY ShowingDate DESC, ShowingTime DESC")
 		cursor.execute(query)
 		showings=cursor.fetchall()
 		
@@ -152,29 +152,76 @@ def searchShowtimes(showings=None):
 	
 @app.route('/submitsearch', methods=["POST"])
 def submitSearch():
-
-	MovieName = [request.form['MovieName']]
 	startDate = request.form['startDate']
 	endDate = request.form['endDate']
+	MovieName = request.form['MovieName']
 	genre = request.form['genre']
+	seatCapacity = request.form['seats'];
+	
+	AddAnd = False
+	AddWhere = False
+	data = []
 
 	cnx = mysql.connector.connect(user='root', database='MovieTheatre')
 	cursor = cnx.cursor()
 	query = (
-        "SELECT Showing.idShowing, Showing.ShowingDateTime, Showing.Movie_idMovie, Showing.TheatreRoom_RoomNumber,FORMAT(Showing.TicketPrice,2) as TicketPrice, Genre.Genre, Movie.MovieName, TheatreRoom.RoomNumber FROM Showing JOIN Genre "
+        "SELECT Showing.idShowing, DATE_FORMAT(Showing.ShowingDateTime, '%M-%d-%Y') AS ShowingDate, TIME_FORMAT(Showing.ShowingDateTime,'%r') AS ShowingTime, Showing.Movie_idMovie, Showing.TheatreRoom_RoomNumber, "
+		"FORMAT(Showing.TicketPrice,2) as TicketPrice, GROUP_CONCAT(DISTINCT(Genre.Genre)) as Genre, Movie.MovieName, TheatreRoom.RoomNumber FROM Showing JOIN Genre "
 		"ON Showing.Movie_idMovie = Genre.Movie_idMovie JOIN TheatreRoom ON Showing.TheatreRoom_RoomNumber "
-		"= TheatreRoom.RoomNumber JOIN Movie ON Showing.Movie_idMovie = Movie.idMovie WHERE")
+		"= TheatreRoom.RoomNumber JOIN Movie ON Showing.Movie_idMovie = Movie.idMovie")
+	
 	if MovieName != '':
-		query += " Movie.MovieName = %s "
+		AddAnd = True
+		AddWhere = True
+		query += " WHERE Movie.MovieName = %s "
+		data.append(MovieName)
+	
 	if startDate != '':
-		query += " Showing.ShowingDateTime > %s AND"
+		if AddAnd:
+			query += "AND"
+		if not AddWhere:
+			query += " WHERE"
+		AddWhere = True
+		AddAnd = True
+		query += " Showing.ShowingDateTime > %s "
+		data.append(startDate)
+	
 	if endDate != '':
-		query += " Showing.ShowingDateTime < %s AND"
+		if AddAnd:
+			query += "AND"
+		if not AddWhere:
+			query += " WHERE"
+		AddWhere = True
+		AddAnd = True
+		query += " Showing.ShowingDateTime < %s "
+		data.append(endDate)
+	
 	if genre != '':
-		query += " Genre.Genre = %s"
-		
-	print("Attempting " + query)
-	cursor.execute(query,MovieName)
+		if AddAnd:
+			query += "AND"
+		if not AddWhere:
+			query += " WHERE"
+		AddWhere = True
+		AddAnd = True
+		query += " Genre.Genre = %s "
+		data.append(genre)
+	
+	if seatCapacity != "false":
+		if AddAnd:
+			query += "AND"
+		if not AddWhere:
+			query += " WHERE"
+		query += (" Showing.idShowing in (SELECT IF((TheatreRoom.Capacity - COUNT(Attend.Showing_idShowing)),Attend.Showing_idShowing, '') AS idShowing " 
+				  "FROM Attend,Showing,TheatreRoom "
+				  "WHERE TheatreRoom.RoomNumber = Showing.TheatreRoom_RoomNumber AND Attend.Showing_idShowing = Showing.idShowing GROUP BY Attend.Showing_idShowing)"
+				  " OR Showing.idShowing not in (SELECT Showing_idShowing FROM Attend)")
+	
+	query += " GROUP by Movie_idMovie, idShowing ORDER BY ShowingDate DESC, ShowingTime DESC"	
+	
+	if len(data) == 0:
+		cursor.execute(query)
+	else:
+		cursor.execute(query,data)
 	showings=cursor.fetchall()
 	cnx.close()
 	return searchShowtimes(showings)

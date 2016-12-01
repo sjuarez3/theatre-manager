@@ -13,6 +13,13 @@ td, th {
     padding: 6px;
 }
 </style>
+<script>
+function checkBoxValue() {
+	if(document.getElementById("seatsAvailable").checked) {
+		document.getElementById("seatsAvailableHidden").disable;
+	}
+}
+</script>
 </head>
 <body>
   <h1>Search Showtimes</h1>
@@ -31,7 +38,8 @@ td, th {
       <option value={{ movieGenre.0 }}>{{ movieGenre.0 }}</option>
 	  {% endfor %}
       </select>
-	  <input type="checkbox" name="Seats" value="Yes"> Only Available Seats
+	  <input id="seatsAvailable" onClick="checkBoxValue()" type="checkbox" name="seats" value="true"> Only Available Seats
+	  <input id="seatsAvailableHidden" type="hidden" name="seats" value="false">
 	  <br></br>
 	  <th><input type="submit" value="Search"></th>
   </form>
@@ -41,7 +49,8 @@ td, th {
 	<table>
 		<tr>
 		  <th>ShowingID</th>
-		  <th>Showing Date/Time</th>
+		  <th>Showing Date</th>
+		  <th>Showing Time</th>
 		  <th>MovieID</th>
 		  <th>Room Number</th>
 		  <th>Ticket Price</th>
@@ -55,9 +64,10 @@ td, th {
 				<th>{{ showing.1 }}</th>
 				<th>{{ showing.2}}</th>
 				<th>{{ showing.3}}</th>
-				<th>${{ showing.4}}</th>
-				<th>{{ showing.5}}</th>
+				<th>{{ showing.4}}</th>
+				<th>${{ showing.5}}</th>
 				<th>{{ showing.6}}</th>
+				<th>{{ showing.7}}</th>
 				<th><input type="submit" value="Buy"></th>
 		{% endfor %}
 		</tr>
