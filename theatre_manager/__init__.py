@@ -63,11 +63,11 @@ def mainMenu():
         idCustomer=row[0]
         session['idCustomer']=idCustomer
         Sex=row[4]
-        session['Sex'] = Sex
+        session['Sex'] = Sex.decode("utf-8")
 	
     cnx.commit()
     cnx.close()
-    return render_template('mainmenu.html', FirstName=request.form['FirstName'], LastName=request.form['LastName'], EmailAddress=request.form['EmailAddress'], Sex=Sex)
+    return render_template('mainmenu.html', FirstName=request.form['FirstName'], LastName=request.form['LastName'], EmailAddress=request.form['EmailAddress'], Sex=Sex.decode("utf-8"))
 
 @app.route("/moviesWatched")
 def movieSeen():
