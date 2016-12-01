@@ -246,6 +246,25 @@ def purchaseTicket(showings=None):
 	cnx.commit()
 	cnx.close()
 	return searchShowtimes(showings)
+	
+@app.route('/injectionattack')
+def injectionAttack():
+	return render_template('injectionattack.html')
+	
+@app.route('/sqlinjectionattack', methods=["POST"])
+def sqlInjectionAttack():
+
+    FirstName = request.form['FirstName']
+
+    cnx = mysql.connector.connect(user='root', database='MovieTheatre')
+    cursor = cnx.cursor()
+    query = ("SELECT idCustomer, FirstName, LastName, EmailAddress, CAST(Sex AS CHAR CHARACTER SET utf8) AS Sex FROM Customer WHERE FirstName = '" + FirstName + "'")
+    cursor.execute(query)
+    customers = cursor.fetchall()
+    cnx.commit()
+    cnx.close()
+    
+    return render_template('sqlinjectionattack.html', customers=customers)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
