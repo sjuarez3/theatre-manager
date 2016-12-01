@@ -7,7 +7,8 @@ def listCustomers():
     cnx = mysql.connector.connect(user='root', database='MovieTheatre')
     cursor = cnx.cursor()
     query = (
-        "SELECT * FROM Customer ORDER BY LastName")
+        "SELECT idCustomer, FirstName, LastName, EmailAddress, CAST(Sex AS CHAR CHARACTER SET utf8) AS Sex FROM Customer ORDER BY LastName")
+		
     cursor.execute(query)
     customers=cursor.fetchall()
     cnx.close()
@@ -36,7 +37,7 @@ def submitCustomer():
 def deleteCustomer():
     cnx = mysql.connector.connect(user='root', database='MovieTheatre')
     cursor = cnx.cursor()
-    query = ("SELECT * FROM Customer ORDER BY LastName")
+    query = ("SELECT idCustomer, FirstName, LastName, EmailAddress, CAST(Sex AS CHAR CHARACTER SET utf8) AS Sex  FROM Customer ORDER BY LastName")
     cursor.execute(query)
     customers=cursor.fetchall()
     cnx.close()
@@ -66,7 +67,7 @@ def removeCustomer():
 def editCustomer():
     cnx = mysql.connector.connect(user='root', database='MovieTheatre')
     cursor = cnx.cursor()
-    query = ("SELECT * FROM Customer ORDER BY LastName" )
+    query = ("SELECT idCustomer, FirstName, LastName, EmailAddress, CAST(Sex AS CHAR CHARACTER SET utf8) AS Sex FROM Customer ORDER BY LastName" )
     cursor.execute(query)
     customers=cursor.fetchall()
     cnx.close()
