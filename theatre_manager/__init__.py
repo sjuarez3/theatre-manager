@@ -147,8 +147,13 @@ def searchShowtimes(showings=None):
 	genreQuery = ("SELECT DISTINCT Genre FROM Genre")
 	cursor.execute(genreQuery)
 	genres=cursor.fetchall()
+	
+	purchasedShowingsQuery = ("SELECT Showing.idShowing FROM Showing, Attend WHERE Showing.idShowing = Attend.Showing_idShowing AND Attend.Customer_idCustomer = %s")
+	data = [str(session.get('idCustomer', None))]
+	cursor.execute(purchasedShowingsQuery,data)
+	attendedshowings=cursor.fetchall()
 	cnx.close()
-	return render_template('searchshowtimes.html', showings=showings, genres=genres)
+	return render_template('searchshowtimes.html', showings=showings, genres=genres, attendedshowings=attendedshowings)
 	
 @app.route('/submitsearch', methods=["POST"])
 def submitSearch():
@@ -223,6 +228,22 @@ def submitSearch():
 	else:
 		cursor.execute(query,data)
 	showings=cursor.fetchall()
+	cnx.close()
+	return searchShowtimes(showings)
+	
+@app.route('/buyticket', methods=["POST"])
+def purchaseTicket(showings=None):
+	idCustomer = str(session.get('idCustomer', None))
+	idShowing = request.form['idShowing']
+	cnx = mysql.connector.connect(user='root', database='MovieTheatre')
+	cursor = cnx.cursor()
+	
+	query = ("INSERT INTO Attend (Customer_idCustomer, Showing_idShowing) "
+			"VALUES (%s, %s)")
+	data = (idCustomer, idShowing)
+	cursor.execute(query,data)
+	
+	cnx.commit()
 	cnx.close()
 	return searchShowtimes(showings)
 

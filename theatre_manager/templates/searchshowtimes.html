@@ -19,9 +19,15 @@ function checkBoxValue() {
 		document.getElementById("seatsAvailableHidden").disable;
 	}
 }
+
+function disableBuyButton(){
+  {% for attend in attendedshowings %}
+    document.getElementById("purchaseTicket{{ attend.0 }}").disabled=true;
+  {% endfor %}
+}
 </script>
 </head>
-<body>
+<body onload="disableBuyButton()">
   <h1>Search Showtimes</h1>
   
   <form action="/submitsearch" method="post">
@@ -68,7 +74,10 @@ function checkBoxValue() {
 				<th>${{ showing.5}}</th>
 				<th>{{ showing.6}}</th>
 				<th>{{ showing.7}}</th>
-				<th><input type="submit" value="Buy"></th>
+				<form action="/buyticket" method="post">
+				<input type="hidden" name="idShowing" value="{{showing.0}}">
+				<th><input id="purchaseTicket{{ showing.0 }}" type="submit" value="Buy"></th>
+				</form>
 		{% endfor %}
 		</tr>
 	</table>
