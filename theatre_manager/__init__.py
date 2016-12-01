@@ -26,7 +26,7 @@ def viewProfile():
 	EmailAddress = session.get('EmailAddress', None)
 	Sex = session.get('Sex', None)
 	idCustomer = session.get('idCustomer', None)
-	return render_template('customerprofile.html', FirstName=FirstName, LastName=LastName, EmailAddress=EmailAddress, Sex=Sex.decode("utf-8"), idCustomer=idCustomer)
+	return render_template('customerprofile.html', FirstName=FirstName, LastName=LastName, EmailAddress=EmailAddress, Sex=Sex, idCustomer=idCustomer)
 
 @app.route('/index', methods=["POST"])
 def index():
